@@ -56,7 +56,7 @@ module Capistrano
           expires_in = Capistrano::DateHelper.distance_of_time_in_words_to_now deploy_lock[:expire_at].localtime
           message << "\nLock expired #{expires_in} ago, unlocking..."
         else
-          message << "\nLock expired at #{deploy_lock[:expire_at].localtime.strftime("%H:%M:%S")}"
+          message << "\nLock expired at #{deploy_lock[:expire_at].localtime.strftime("%Y-%m-%d %H:%M:%S %z")}"
         end
       else
         message << "\nLock must be manually removed with: cap #{stage ? stage + ' ' : ''}deploy:unlock"

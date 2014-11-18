@@ -23,16 +23,18 @@ Capistrano::Configuration.instance(:must_exist).load do
         parallel do |session|
           find_servers_for_task(current_task).each do |current_server|
             session.else "[ -e #{deploy_lockfile} ] && cat #{deploy_lockfile} || true" do |ch, stream, output|
-              if output && output != ""
+              # this sets the lock value on the first server we found
+              if self[:deploy_lock].nil? && output && output != ""
                 logger.info "Deploy lock found on: #{current_server.host}"
                 set :deploy_lock, YAML.load(output)
-                return
               end
             end
           end
         end
 
-        set :deploy_lock, false
+        if self[:deploy_lock].nil?
+          set :deploy_lock, false
+        end
       end
     end
 
